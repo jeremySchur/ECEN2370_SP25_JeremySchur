@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := ECEN2370_StarterCode_SP25
+BUILD_ARTIFACT_NAME := ECEN2370_SP25_JeremySchur
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-ECEN2370_StarterCode_SP25.elf \
+ECEN2370_SP25_JeremySchur.elf \
 
 MAP_FILES += \
-ECEN2370_StarterCode_SP25.map \
+ECEN2370_SP25_JeremySchur.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-ECEN2370_StarterCode_SP25.list \
+ECEN2370_SP25_JeremySchur.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: ECEN2370_StarterCode_SP25.elf secondary-outputs
+main-build: ECEN2370_SP25_JeremySchur.elf secondary-outputs
 
 # Tool invocations
-ECEN2370_StarterCode_SP25.elf ECEN2370_StarterCode_SP25.map: $(OBJS) $(USER_OBJS) C:\Users\donav\STM32CubeIDE\PES\ECEN2370_StarterCode_SP25\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "ECEN2370_StarterCode_SP25.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\donav\STM32CubeIDE\PES\ECEN2370_StarterCode_SP25\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ECEN2370_StarterCode_SP25.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+ECEN2370_SP25_JeremySchur.elf ECEN2370_SP25_JeremySchur.map: $(OBJS) $(USER_OBJS) /Users/jeremyschur/Desktop/ECEN2370_SP25_JeremySchur/STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "ECEN2370_SP25_JeremySchur.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/jeremyschur/Desktop/ECEN2370_SP25_JeremySchur/STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ECEN2370_SP25_JeremySchur.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-ECEN2370_StarterCode_SP25.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "ECEN2370_StarterCode_SP25.list"
+ECEN2370_SP25_JeremySchur.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "ECEN2370_SP25_JeremySchur.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) ECEN2370_StarterCode_SP25.elf ECEN2370_StarterCode_SP25.list ECEN2370_StarterCode_SP25.map default.size.stdout
+	-$(RM) ECEN2370_SP25_JeremySchur.elf ECEN2370_SP25_JeremySchur.list ECEN2370_SP25_JeremySchur.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
