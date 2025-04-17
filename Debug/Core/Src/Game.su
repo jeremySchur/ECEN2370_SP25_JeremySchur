@@ -1,0 +1,3 @@
+../Core/Src/Game.c:10:6:game_init	24	static
+../Core/Src/Game.c:20:6:draw_board	32	static
+../Core/Src/Game.c:51:6:draw_chip	16	static
