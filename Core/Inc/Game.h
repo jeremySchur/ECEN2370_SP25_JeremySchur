@@ -15,9 +15,11 @@
 #define ROWS 6
 #define COLS 7
 #define TOP_MARGIN 40
-#define CHIP_RADIUS 15
+#define CHIP_RADIUS 13
 #define CELL_WIDTH (LCD_PIXEL_WIDTH / COLS)
 #define CELL_HEIGHT ((LCD_PIXEL_HEIGHT - TOP_MARGIN) / ROWS)
+#define WIN_COUNT 4
+#define MAX_CHIPS 42
 
 typedef enum {
     EMPTY,
@@ -39,6 +41,7 @@ typedef enum {
 
 typedef struct {
 	Cell board[ROWS][COLS];
+	uint8_t chips_placed;
 	uint8_t current_player; // 1 represents RED's turn, 2 represents BLUE's turn.
 	GameStatus status;
 	GameMode mode;
@@ -51,8 +54,8 @@ typedef struct {
 
 void game_init(GameState *state);
 bool game_check_move(GameState *state, uint8_t col);
-void game_make_move(GameState *state, uint8_t col);
-void game_check_winner(GameState *state);
+uint8_t game_make_move(GameState *state, uint8_t col);
+void game_check_winner(GameState *state, uint8_t col, uint8_t row);
 void draw_board(GameState *state);
 void draw_chip(uint16_t x, uint16_t y, uint16_t Color);
 

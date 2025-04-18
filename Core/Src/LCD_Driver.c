@@ -293,52 +293,6 @@ void LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
   LCD_Draw_Char(Xpos, Ypos, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
 }
 
-void visualDemo(void)
-{
-	uint16_t x;
-	uint16_t y;
-	// This for loop just illustrates how with using logic and for loops, you can create interesting things
-	// this may or not be useful ;)
-	for(y=0; y<LCD_PIXEL_HEIGHT; y++){
-		for(x=0; x < LCD_PIXEL_WIDTH; x++){
-			if (x & 32)
-				frameBuffer[x*y] = LCD_COLOR_WHITE;
-			else
-				frameBuffer[x*y] = LCD_COLOR_BLACK;
-		}
-	}
-
-	HAL_Delay(1500);
-	LCD_Clear(0, LCD_COLOR_GREEN);
-	HAL_Delay(1500);
-	LCD_Clear(0, LCD_COLOR_RED);
-	HAL_Delay(1500);
-	LCD_Clear(0, LCD_COLOR_WHITE);
-	LCD_Draw_Vertical_Line(10,10,250,LCD_COLOR_MAGENTA);
-	HAL_Delay(1500);
-	LCD_Draw_Vertical_Line(230,10,250,LCD_COLOR_MAGENTA);
-	HAL_Delay(1500);
-
-	LCD_Draw_Circle_Fill(125,150,20,LCD_COLOR_BLACK);
-	HAL_Delay(2000);
-
-	LCD_Clear(0,LCD_COLOR_BLUE);
-	LCD_SetTextColor(LCD_COLOR_BLACK);
-	LCD_SetFont(&Font16x24);
-
-	LCD_DisplayChar(100,140,'H');
-	LCD_DisplayChar(115,140,'e');
-	LCD_DisplayChar(125,140,'l');
-	LCD_DisplayChar(130,140,'l');
-	LCD_DisplayChar(140,140,'o');
-
-	LCD_DisplayChar(100,160,'W');
-	LCD_DisplayChar(115,160,'o');
-	LCD_DisplayChar(125,160,'r');
-	LCD_DisplayChar(130,160,'l');
-	LCD_DisplayChar(140,160,'d');
-}
-
 /**
   * @brief  This function is executed in case of error occurrence.
   * @retval None

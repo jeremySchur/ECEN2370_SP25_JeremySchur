@@ -72,9 +72,6 @@ void LCD_Clear(uint8_t LayerIndex, uint16_t Color);
 
 void LCD_Error_Handler(void);
 
-// Demo using provided functions
-void visualDemo(void);
-
 void LCD_Error_Handler(void);
 
 #if COMPILE_TOUCH_FUNCTIONS == 1

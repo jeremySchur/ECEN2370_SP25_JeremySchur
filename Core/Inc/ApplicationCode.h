@@ -26,10 +26,4 @@ Screen handle_start_screen(void);
 Screen handle_game_screen(void);
 Screen handle_end_screen(void);
 
-void LCD_Visual_Demo(void);
-
-#if (COMPILE_TOUCH_FUNCTIONS == 1)
-void LCD_Touch_Polling_Demo(void);
-#endif // (COMPILE_TOUCH_FUNCTIONS == 1)
-
 #endif /* INC_APPLICATIONCODE_H_ */

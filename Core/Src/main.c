@@ -124,7 +124,7 @@ int main(void) {
 			current_screen = handle_game_screen();
 			break;
 		case END_SCREEN:
-//			current_screen = handle_game_over_screen();
+			current_screen = handle_end_screen();
 			break;
 		}
 		/* USER CODE END WHILE */
@@ -567,6 +567,12 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	/* USER CODE BEGIN MX_GPIO_Init_2 */
+	GPIO_InitStruct.Pin = GPIO_PIN_0;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 	/* USER CODE END MX_GPIO_Init_2 */
 }
 

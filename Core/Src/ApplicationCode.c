@@ -76,6 +76,8 @@ Screen handle_start_screen(void){
 
 	LCD_Draw_Circle_Fill(180, 145, 20, LCD_COLOR_GREEN);
 
+	HAL_Delay(100);
+
 
 	while (1) {
 		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
@@ -104,6 +106,7 @@ Screen handle_game_screen(void){
 
 			draw_board(&state);
 			draw_chip(x, y, color);
+			HAL_Delay(100);
 
 			screen_pressed = false;
 			while(!screen_pressed){
@@ -117,34 +120,58 @@ Screen handle_game_screen(void){
 				}
 			}
 		}
-		// Add interrupt handler for button press and add logic to drop chip
 
+		if (game_check_move(&state, chip.col)){
+			uint8_t row = game_make_move(&state, chip.col);
+			game_check_winner(&state, chip.col, row);
+
+			state.current_player = (state.current_player == 1) ? 2 : 1;
+		}
 	}
 
 	return END_SCREEN;
 }
 
-void LCD_Visual_Demo(void)
-{
-	visualDemo();
-}
+Screen handle_end_screen(void){
+	LCD_Clear(0, LCD_COLOR_BLACK);
+	LCD_SetFont(&Font16x24);
 
-#if COMPILE_TOUCH_FUNCTIONS == 1
-void LCD_Touch_Polling_Demo(void)
-{
-	LCD_Clear(0,LCD_COLOR_GREEN);
+	// Red Score
+	LCD_SetTextColor(LCD_COLOR_RED);
+	LCD_DisplayChar(10, 10, 'R');
+	LCD_DisplayChar(27, 10, 'E');
+	LCD_DisplayChar(45, 10, 'D');
+	LCD_DisplayChar(55, 8, ':');
+	LCD_DisplayChar(70, 10, '5'); // THIS NEEDS TO BE THE ACTUAL SCORE
+
+	// Blue Score
+	LCD_SetTextColor(LCD_COLOR_BLUE);
+	LCD_DisplayChar(137, 10, 'B');
+	LCD_DisplayChar(152, 10, 'L');
+	LCD_DisplayChar(167, 10, 'U');
+	LCD_DisplayChar(185, 10, 'E');
+	LCD_DisplayChar(195, 8, ':');
+	LCD_DisplayChar(210, 10, '5'); // THIS NEEDS TO BE THE ACTUAL SCORE
+
 	while (1) {
-		/* If touch pressed */
 		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
-			/* Touch valid */
-			printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
-			LCD_Clear(0, LCD_COLOR_RED);
-		} else {
-			/* Touch not pressed */
-			printf("Not Pressed\n\n");
-			LCD_Clear(0, LCD_COLOR_GREEN);
+			if (StaticTouchData.y < LCD_PIXEL_HEIGHT / 2) {
+				break;
+			}
 		}
 	}
-}
-#endif // COMPILE_TOUCH_FUNCTIONS
 
+	return START_SCREEN;
+}
+
+void EXTI0_IRQHandler(void){
+	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
+	EXTI_HandleTypeDef hexti;
+	hexti.Line = EXTI_LINE_0;
+
+	screen_pressed = true;
+	button_pressed = true;
+
+	HAL_EXTI_ClearPending(&hexti, EXTI_TRIGGER_RISING_FALLING);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}

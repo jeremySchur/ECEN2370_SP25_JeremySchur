@@ -1,3 +1,0 @@
-../Core/Src/Game.c:10:6:game_init	3
-../Core/Src/Game.c:20:6:draw_board	7
-../Core/Src/Game.c:51:6:draw_chip	1
