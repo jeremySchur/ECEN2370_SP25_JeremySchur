@@ -228,6 +228,17 @@ void LCD_Draw_Circle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_
     }
 }
 
+void LCD_Draw_Rectangle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t width, uint16_t height, uint16_t color)
+{
+    for(uint16_t y = 0; y < height; y++)
+    {
+        for(uint16_t x = 0; x < width; x++)
+        {
+            LCD_Draw_Pixel(Xpos + x, Ypos + y, color);
+        }
+    }
+}
+
 void LCD_Draw_Vertical_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color)
 {
   for (uint16_t i = 0; i < len; i++)
@@ -291,6 +302,14 @@ void LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
 {
   Ascii -= 32;
   LCD_Draw_Char(Xpos, Ypos, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
+}
+
+void LCD_DisplayString(uint16_t Xpos, uint16_t Ypos, const char *str){
+    while (*str){
+        LCD_DisplayChar(Xpos, Ypos, *str);
+        Xpos += LCD_Currentfonts->Width;
+        str++;
+    }
 }
 
 /**

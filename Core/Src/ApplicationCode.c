@@ -28,6 +28,8 @@ void ApplicationInit(void)
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
 
+    game_init(&state);
+
     #if COMPILE_TOUCH_FUNCTIONS == 1
 	InitializeLCDTouch();
 
@@ -44,41 +46,20 @@ Screen handle_start_screen(void){
 	LCD_SetFont(&Font16x24);
 
 	// Single Player Button
-	LCD_DisplayChar(25, 80, 'S');
-	LCD_DisplayChar(36, 80, 'i');
-	LCD_DisplayChar(45, 80, 'n');
-	LCD_DisplayChar(60, 80, 'g');
-	LCD_DisplayChar(70, 80, 'l');
-	LCD_DisplayChar(80, 80, 'e');
-
-	LCD_DisplayChar(25, 100, 'P');
-	LCD_DisplayChar(35, 100, 'l');
-	LCD_DisplayChar(45, 100, 'a');
-	LCD_DisplayChar(56, 100, 'y');
-	LCD_DisplayChar(70, 100, 'e');
-	LCD_DisplayChar(83, 100, 'r');
+	LCD_DisplayString(15, 80, "Single");
+	LCD_DisplayString(15, 100, "Player");
 
 	LCD_Draw_Circle_Fill(60, 145, 20, LCD_COLOR_GREEN);
 
 	// Multi-player button
-	LCD_DisplayChar(152, 80,  'M');
-	LCD_DisplayChar(169, 80,  'u');
-	LCD_DisplayChar(181, 80,  'l');
-	LCD_DisplayChar(189, 80,  't');
-	LCD_DisplayChar(197, 80,  'i');
-
-	LCD_DisplayChar(145, 100, 'P');
-	LCD_DisplayChar(155, 100, 'l');
-	LCD_DisplayChar(165, 100, 'a');
-	LCD_DisplayChar(176, 100, 'y');
-	LCD_DisplayChar(190, 100, 'e');
-	LCD_DisplayChar(203, 100, 'r');
+	LCD_DisplayString(142, 80, "Multi");
+	LCD_DisplayString(135, 100, "Player");
 
 	LCD_Draw_Circle_Fill(180, 145, 20, LCD_COLOR_GREEN);
 
 	HAL_Delay(100);
 
-
+	// Logic for Mode Selection
 	while (1) {
 		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
 			if (StaticTouchData.x < LCD_PIXEL_WIDTH / 2) {
@@ -93,66 +74,106 @@ Screen handle_start_screen(void){
 	return GAME_SCREEN;
 }
 
-Screen handle_game_screen(void){
-	game_init(&state);
+Screen handle_game_screen(){
+	game_reset(&state);
 
+	TIM2_Start_Timer();
 	while (state.status == GAME_ONGOING){
 		button_pressed = false;
-		while(!button_pressed) {
-			uint16_t color = (state.current_player == 1) ? LCD_COLOR_RED : LCD_COLOR_BLUE;
 
-			uint16_t x = chip.col * CELL_WIDTH + CELL_WIDTH / 2;
-			uint16_t y = chip.row * CELL_HEIGHT + CELL_HEIGHT / 2;
+		// "AI" Turn Logic
+		if (state.mode == SINGLE_PLAYER && state.current_player == 2){
+			uint8_t col = get_random_move(&state);
+			if (game_check_move(&state, col)){
+				uint8_t row = game_make_move(&state, col);
+				game_check_winner(&state, col, row);
 
-			draw_board(&state);
-			draw_chip(x, y, color);
-			HAL_Delay(100);
+				state.current_player = (state.current_player == 1) ? 2 : 1;
+			}
+		} else { // Player Turn Logic
+			while(!button_pressed) {
+				uint16_t color = (state.current_player == 1) ? LCD_COLOR_RED : LCD_COLOR_BLUE;
 
-			screen_pressed = false;
-			while(!screen_pressed){
-				if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
-					if (StaticTouchData.x < LCD_PIXEL_WIDTH / 2) {
-						chip.col = (chip.col == 0) ? 0 : chip.col - 1;
-					} else {
-						chip.col = (chip.col == COLS - 1) ? COLS - 1 : chip.col + 1;
+				uint16_t x = chip.col * CELL_WIDTH + CELL_WIDTH / 2;
+				uint16_t y = chip.row * CELL_HEIGHT + CELL_HEIGHT / 2;
+
+				draw_board(&state);
+				draw_chip(x, y, color);
+				HAL_Delay(100);
+
+				screen_pressed = false;
+				while(!screen_pressed){
+					if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+						if (StaticTouchData.x < LCD_PIXEL_WIDTH / 2) {
+							chip.col = (chip.col == 0) ? 0 : chip.col - 1;
+						} else {
+							chip.col = (chip.col == COLS - 1) ? COLS - 1 : chip.col + 1;
+						}
+						screen_pressed = true;
 					}
-					screen_pressed = true;
 				}
 			}
-		}
 
-		if (game_check_move(&state, chip.col)){
-			uint8_t row = game_make_move(&state, chip.col);
-			game_check_winner(&state, chip.col, row);
+			if (game_check_move(&state, chip.col)){
+				uint8_t row = game_make_move(&state, chip.col);
+				game_check_winner(&state, chip.col, row);
 
-			state.current_player = (state.current_player == 1) ? 2 : 1;
+				state.current_player = (state.current_player == 1) ? 2 : 1;
+			}
 		}
 	}
+
+	TIM2_Stop_Timer();
 
 	return END_SCREEN;
 }
 
-Screen handle_end_screen(void){
+Screen handle_end_screen(){
 	LCD_Clear(0, LCD_COLOR_BLACK);
 	LCD_SetFont(&Font16x24);
 
+	char score[4];
+	char time[11];
+
 	// Red Score
+	sprintf(score, "%u", state.red_score);
+
 	LCD_SetTextColor(LCD_COLOR_RED);
-	LCD_DisplayChar(10, 10, 'R');
-	LCD_DisplayChar(27, 10, 'E');
-	LCD_DisplayChar(45, 10, 'D');
-	LCD_DisplayChar(55, 8, ':');
-	LCD_DisplayChar(70, 10, '5'); // THIS NEEDS TO BE THE ACTUAL SCORE
+	LCD_DisplayString(10, 10, "RED:");
+	LCD_DisplayString(75, 10, score);
 
 	// Blue Score
-	LCD_SetTextColor(LCD_COLOR_BLUE);
-	LCD_DisplayChar(137, 10, 'B');
-	LCD_DisplayChar(152, 10, 'L');
-	LCD_DisplayChar(167, 10, 'U');
-	LCD_DisplayChar(185, 10, 'E');
-	LCD_DisplayChar(195, 8, ':');
-	LCD_DisplayChar(210, 10, '5'); // THIS NEEDS TO BE THE ACTUAL SCORE
+	sprintf(score, "%u", state.blue_score);
 
+	LCD_SetTextColor(LCD_COLOR_BLUE);
+	LCD_DisplayString(120, 10, "BLUE:");
+	LCD_DisplayString(200, 10, score);
+
+	// Previous Game Time
+	sprintf(time, "%lu", TIM2_Get_Counter());
+
+	LCD_SetTextColor(LCD_COLOR_WHITE);
+	LCD_DisplayString(45, 45, "TIME:");
+	LCD_DisplayString(125, 45, time);
+
+	// Logic for Win Display
+	if (state.status == GAME_WIN_RED){
+		LCD_SetTextColor(LCD_COLOR_RED);
+		LCD_DisplayString(50, 160, "RED WINS!");
+	} else if (state.status == GAME_WIN_BLUE) {
+		LCD_SetTextColor(LCD_COLOR_BLUE);
+		LCD_DisplayString(40, 160, "BLUE WINS!");
+	} else {
+		LCD_SetTextColor(LCD_COLOR_WHITE);
+		LCD_DisplayString(90, 160, "TIE!");
+	}
+
+	// Play Again Button
+	LCD_SetTextColor(LCD_COLOR_WHITE);
+	LCD_Draw_Rectangle_Fill(30, 270, 170, 40, LCD_COLOR_GREEN);
+	LCD_DisplayString(35, 280, "PLAY AGAIN");
+
+	// Logic for Play Again Button
 	while (1) {
 		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
 			if (StaticTouchData.y < LCD_PIXEL_HEIGHT / 2) {

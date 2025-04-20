@@ -8,6 +8,11 @@
 #include "Game.h"
 
 void game_init(GameState *state) {
+	state->red_score = 0;
+	state->blue_score = 0;
+}
+
+void game_reset(GameState *state){
 	for (uint8_t r = 0; r < ROWS; r++) {
 		for (uint8_t c = 0; c < COLS; c++) {
 			state->board[r][c] = EMPTY;
@@ -15,6 +20,7 @@ void game_init(GameState *state) {
 	}
 	state->current_player = 1;
 	state->status = GAME_ONGOING;
+	state->chips_placed = 0;
 }
 
 void draw_board(GameState *state) {
@@ -101,7 +107,13 @@ void game_check_winner(GameState *state, uint8_t col, uint8_t row){
 		}
 
 		if (count >= WIN_COUNT){
-			state->status = (player_chip == RED) ? GAME_WIN_RED : GAME_WIN_BLUE;
+			if (player_chip == RED){
+				state->status = GAME_WIN_RED;
+				state->red_score += 1;
+			} else {
+				state->status = GAME_WIN_BLUE;
+				state->blue_score += 1;
+			}
 			return;
 		}
 	}
@@ -110,4 +122,8 @@ void game_check_winner(GameState *state, uint8_t col, uint8_t row){
 	if (state->chips_placed == MAX_CHIPS){
 		state->status = GAME_DRAW;
 	}
+}
+
+uint8_t get_random_move(GameState *state){
+	return get_random_0_to_6();
 }

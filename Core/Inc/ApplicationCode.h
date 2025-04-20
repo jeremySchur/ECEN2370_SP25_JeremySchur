@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "Game.h"
+#include "Timer_Driver.h"
 
 typedef enum {
 	START_SCREEN,
@@ -23,7 +24,7 @@ typedef enum {
 
 void ApplicationInit(void);
 Screen handle_start_screen(void);
-Screen handle_game_screen(void);
-Screen handle_end_screen(void);
+Screen handle_game_screen();
+Screen handle_end_screen();
 
 #endif /* INC_APPLICATIONCODE_H_ */

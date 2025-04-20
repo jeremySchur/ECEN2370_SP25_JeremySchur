@@ -44,11 +44,7 @@ I2C_HandleTypeDef hi2c3;
 
 LTDC_HandleTypeDef hltdc;
 
-RNG_HandleTypeDef hrng;
-
 SPI_HandleTypeDef hspi5;
-
-TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
 
@@ -58,8 +54,6 @@ TIM_HandleTypeDef htim2;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_LTDC_Init(void);
-static void MX_RNG_Init(void);
-static void MX_TIM2_Init(void);
 static void MX_SPI5_Init(void);
 static void MX_I2C3_Init(void);
 /* USER CODE BEGIN PFP */
@@ -106,12 +100,9 @@ int main(void) {
 	MX_I2C3_Init();
 	/* USER CODE BEGIN 2 */
 	ApplicationInit(); // Initializes the LCD functionality
-//  LCD_Visual_Demo();
 	HAL_Delay(5000);
 	/* USER CODE END 2 */
-//#if COMPILE_TOUCH_FUNCTIONS == 1 // This block will need to be deleted
-//  LCD_Touch_Polling_Demo(); // This function Will not return
-//#endif
+
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	Screen current_screen = START_SCREEN;
@@ -300,30 +291,6 @@ static void MX_LTDC_Init(void) {
 }
 
 /**
- * @brief RNG Initialization Function
- * @param None
- * @retval None
- */
-static void MX_RNG_Init(void) {
-
-	/* USER CODE BEGIN RNG_Init 0 */
-
-	/* USER CODE END RNG_Init 0 */
-
-	/* USER CODE BEGIN RNG_Init 1 */
-
-	/* USER CODE END RNG_Init 1 */
-	hrng.Instance = RNG;
-	if (HAL_RNG_Init(&hrng) != HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN RNG_Init 2 */
-
-	/* USER CODE END RNG_Init 2 */
-
-}
-
-/**
  * @brief SPI5 Initialization Function
  * @param None
  * @retval None
@@ -359,47 +326,47 @@ static void MX_SPI5_Init(void) {
 
 }
 
-/**
- * @brief TIM2 Initialization Function
- * @param None
- * @retval None
- */
-static void MX_TIM2_Init(void) {
-
-	/* USER CODE BEGIN TIM2_Init 0 */
-
-	/* USER CODE END TIM2_Init 0 */
-
-	TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
-	TIM_MasterConfigTypeDef sMasterConfig = { 0 };
-
-	/* USER CODE BEGIN TIM2_Init 1 */
-
-	/* USER CODE END TIM2_Init 1 */
-	htim2.Instance = TIM2;
-	htim2.Init.Prescaler = 0;
-	htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim2.Init.Period = 4294967295;
-	htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-	if (HAL_TIM_Base_Init(&htim2) != HAL_OK) {
-		Error_Handler();
-	}
-	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-	if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK) {
-		Error_Handler();
-	}
-	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-	if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig)
-			!= HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN TIM2_Init 2 */
-
-	/* USER CODE END TIM2_Init 2 */
-
-}
+///**
+// * @brief TIM2 Initialization Function
+// * @param None
+// * @retval None
+// */
+//static void MX_TIM2_Init(void) {
+//
+//	/* USER CODE BEGIN TIM2_Init 0 */
+//
+//	/* USER CODE END TIM2_Init 0 */
+//
+//	TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
+//	TIM_MasterConfigTypeDef sMasterConfig = { 0 };
+//
+//	/* USER CODE BEGIN TIM2_Init 1 */
+//
+//	/* USER CODE END TIM2_Init 1 */
+//	htim2.Instance = TIM2;
+//	htim2.Init.Prescaler = 83999999; // 84,000,000 - 1
+//	htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+//	htim2.Init.Period = 4294967295;
+//	htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+//	htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+//	if (HAL_TIM_Base_Init(&htim2) != HAL_OK) {
+//		Error_Handler();
+//	}
+//	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+//	if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK) {
+//		Error_Handler();
+//	}
+//	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+//	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+//	if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig)
+//			!= HAL_OK) {
+//		Error_Handler();
+//	}
+//	/* USER CODE BEGIN TIM2_Init 2 */
+//
+//	/* USER CODE END TIM2_Init 2 */
+//
+//}
 
 /**
  * @brief GPIO Initialization Function
@@ -579,19 +546,6 @@ static void MX_GPIO_Init(void) {
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
-
-/**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
-void Error_Handler(void) {
-	/* USER CODE BEGIN Error_Handler_Debug */
-	/* User can add his own implementation to report the HAL error return state */
-	__disable_irq();
-	while (1) {
-	}
-	/* USER CODE END Error_Handler_Debug */
-}
 
 #ifdef  USE_FULL_ASSERT
 /**
