@@ -8,6 +8,7 @@
 #ifndef INC_GAME_H_
 #define INC_GAME_H_
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "LCD_Driver.h"
@@ -21,8 +22,6 @@
 #define CELL_HEIGHT ((LCD_PIXEL_HEIGHT - TOP_MARGIN) / ROWS)
 #define WIN_COUNT 4
 #define MAX_CHIPS 42
-#define MAX_DEPTH 5
-#define INF 1000000
 
 typedef enum {
     EMPTY,
@@ -50,6 +49,7 @@ typedef struct {
 	uint8_t blue_score;
 	GameStatus status;
 	GameMode mode;
+	uint32_t time;
 } GameState;
 
 typedef struct {
@@ -65,5 +65,8 @@ void game_check_winner(GameState *state, uint8_t col, uint8_t row);
 void draw_board(GameState *state);
 void draw_chip(uint16_t x, uint16_t y, uint16_t Color);
 uint8_t get_random_move(GameState *state);
+uint8_t get_best_move(GameState *state, uint8_t ai_player);
+bool check_win(GameState *state, int8_t row, int8_t col, uint8_t chip);
+int16_t count_adjacent(GameState *state, int8_t row, int8_t col, uint8_t chip);
 
 #endif /* INC_GAME_H_ */

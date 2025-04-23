@@ -77,13 +77,13 @@ Screen handle_start_screen(void){
 Screen handle_game_screen(){
 	game_reset(&state);
 
-	TIM2_Start_Timer();
+	uint32_t start_time = HAL_GetTick();
 	while (state.status == GAME_ONGOING){
 		button_pressed = false;
 
 		// "AI" Turn Logic
 		if (state.mode == SINGLE_PLAYER && state.current_player == 2){
-			uint8_t col = get_random_move(&state);
+			uint8_t col = get_best_move(&state, state.current_player);
 			if (game_check_move(&state, col)){
 				uint8_t row = game_make_move(&state, col);
 				game_check_winner(&state, col, row);
@@ -123,7 +123,8 @@ Screen handle_game_screen(){
 		}
 	}
 
-	TIM2_Stop_Timer();
+	uint32_t end_time = HAL_GetTick();
+	state.time = (end_time - start_time) / 1000;
 
 	return END_SCREEN;
 }
@@ -133,7 +134,7 @@ Screen handle_end_screen(){
 	LCD_SetFont(&Font16x24);
 
 	char score[4];
-	char time[11];
+	char time[12];
 
 	// Red Score
 	sprintf(score, "%u", state.red_score);
@@ -150,7 +151,7 @@ Screen handle_end_screen(){
 	LCD_DisplayString(200, 10, score);
 
 	// Previous Game Time
-	sprintf(time, "%lu", TIM2_Get_Counter());
+	sprintf(time, "%lus", state.time);
 
 	LCD_SetTextColor(LCD_COLOR_WHITE);
 	LCD_DisplayString(45, 45, "TIME:");

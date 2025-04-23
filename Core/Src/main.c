@@ -95,7 +95,6 @@ int main(void) {
 	MX_GPIO_Init();
 	MX_LTDC_Init();
 	MX_RNG_Init();
-	MX_TIM2_Init();
 	MX_SPI5_Init();
 	MX_I2C3_Init();
 	/* USER CODE BEGIN 2 */
