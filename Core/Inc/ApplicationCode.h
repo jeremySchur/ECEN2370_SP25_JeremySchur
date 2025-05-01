@@ -26,4 +26,10 @@ Screen handle_start_screen(void);
 Screen handle_game_screen();
 Screen handle_end_screen();
 
+#if USE_GYRO
+void handle_tilt();
+#else
+void handle_press();
+#endif
+
 #endif /* INC_APPLICATIONCODE_H_ */

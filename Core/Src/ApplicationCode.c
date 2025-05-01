@@ -19,7 +19,7 @@ static STMPE811_TouchData StaticTouchData;
 static GameState state;
 static ChipState chip;
 static bool button_pressed;
-static bool screen_pressed;
+static bool moved;
 
 void ApplicationInit(void)
 {
@@ -27,6 +27,10 @@ void ApplicationInit(void)
     LTCD__Init();
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
+
+	#if USE_GYRO
+    Gyro_Init();
+	#endif
 
     game_init(&state);
 
@@ -101,17 +105,11 @@ Screen handle_game_screen(){
 				draw_chip(x, y, color);
 				HAL_Delay(100);
 
-				screen_pressed = false;
-				while(!screen_pressed){
-					if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
-						if (StaticTouchData.x < LCD_PIXEL_WIDTH / 2) {
-							chip.col = (chip.col == 0) ? 0 : chip.col - 1;
-						} else {
-							chip.col = (chip.col == COLS - 1) ? COLS - 1 : chip.col + 1;
-						}
-						screen_pressed = true;
-					}
-				}
+				#if USE_GYRO
+				handle_tilt();
+				#else
+				handle_press();
+				#endif
 			}
 
 			if (game_check_move(&state, chip.col)){
@@ -186,12 +184,43 @@ Screen handle_end_screen(){
 	return START_SCREEN;
 }
 
+#if USE_GYRO
+void handle_tilt(){
+	moved = false;
+	while (!moved) {
+		int16_t x_rate = Gyro_Read_X_Axis();
+
+		if (x_rate > GYRO_THRESHOLD) {
+			chip.col = (chip.col == COLS - 1) ? COLS - 1 : chip.col + 1;
+			moved = true;
+		} else if (x_rate < -GYRO_THRESHOLD) {
+			chip.col = (chip.col == 0) ? 0 : chip.col - 1;
+			moved = true;
+		}
+	}
+}
+#else
+void handle_press(){
+	moved = false;
+	while(!moved){
+		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+			if (StaticTouchData.x < LCD_PIXEL_WIDTH / 2) {
+				chip.col = (chip.col == 0) ? 0 : chip.col - 1;
+			} else {
+				chip.col = (chip.col == COLS - 1) ? COLS - 1 : chip.col + 1;
+			}
+			moved = true;
+		}
+	}
+}
+#endif
+
 void EXTI0_IRQHandler(void){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
 	EXTI_HandleTypeDef hexti;
 	hexti.Line = EXTI_LINE_0;
 
-	screen_pressed = true;
+	moved = true;
 	button_pressed = true;
 
 	HAL_EXTI_ClearPending(&hexti, EXTI_TRIGGER_RISING_FALLING);

@@ -1,6 +1,7 @@
 "./Core/Src/ApplicationCode.o"
 "./Core/Src/Error_Handling.o"
 "./Core/Src/Game.o"
+"./Core/Src/Gyro_Driver.o"
 "./Core/Src/LCD_Driver.o"
 "./Core/Src/RNG_Driver.o"
 "./Core/Src/fonts.o"

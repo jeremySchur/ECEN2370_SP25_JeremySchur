@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include "LCD_Driver.h"
 #include "RNG_Driver.h"
+#include "Gyro_Driver.h"
 
 #define ROWS 6
 #define COLS 7

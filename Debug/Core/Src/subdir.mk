@@ -8,6 +8,7 @@ C_SRCS += \
 ../Core/Src/ApplicationCode.c \
 ../Core/Src/Error_Handling.c \
 ../Core/Src/Game.c \
+../Core/Src/Gyro_Driver.c \
 ../Core/Src/LCD_Driver.c \
 ../Core/Src/RNG_Driver.c \
 ../Core/Src/fonts.c \
@@ -24,6 +25,7 @@ OBJS += \
 ./Core/Src/ApplicationCode.o \
 ./Core/Src/Error_Handling.o \
 ./Core/Src/Game.o \
+./Core/Src/Gyro_Driver.o \
 ./Core/Src/LCD_Driver.o \
 ./Core/Src/RNG_Driver.o \
 ./Core/Src/fonts.o \
@@ -40,6 +42,7 @@ C_DEPS += \
 ./Core/Src/ApplicationCode.d \
 ./Core/Src/Error_Handling.d \
 ./Core/Src/Game.d \
+./Core/Src/Gyro_Driver.d \
 ./Core/Src/LCD_Driver.d \
 ./Core/Src/RNG_Driver.d \
 ./Core/Src/fonts.d \
@@ -60,7 +63,7 @@ Core/Src/%.o Core/Src/%.su Core/Src/%.cyclo: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/ApplicationCode.cyclo ./Core/Src/ApplicationCode.d ./Core/Src/ApplicationCode.o ./Core/Src/ApplicationCode.su ./Core/Src/Error_Handling.cyclo ./Core/Src/Error_Handling.d ./Core/Src/Error_Handling.o ./Core/Src/Error_Handling.su ./Core/Src/Game.cyclo ./Core/Src/Game.d ./Core/Src/Game.o ./Core/Src/Game.su ./Core/Src/LCD_Driver.cyclo ./Core/Src/LCD_Driver.d ./Core/Src/LCD_Driver.o ./Core/Src/LCD_Driver.su ./Core/Src/RNG_Driver.cyclo ./Core/Src/RNG_Driver.d ./Core/Src/RNG_Driver.o ./Core/Src/RNG_Driver.su ./Core/Src/fonts.cyclo ./Core/Src/fonts.d ./Core/Src/fonts.o ./Core/Src/fonts.su ./Core/Src/ili9341.cyclo ./Core/Src/ili9341.d ./Core/Src/ili9341.o ./Core/Src/ili9341.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/stm32f4xx_hal_msp.cyclo ./Core/Src/stm32f4xx_hal_msp.d ./Core/Src/stm32f4xx_hal_msp.o ./Core/Src/stm32f4xx_hal_msp.su ./Core/Src/stm32f4xx_it.cyclo ./Core/Src/stm32f4xx_it.d ./Core/Src/stm32f4xx_it.o ./Core/Src/stm32f4xx_it.su ./Core/Src/stmpe811.cyclo ./Core/Src/stmpe811.d ./Core/Src/stmpe811.o ./Core/Src/stmpe811.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f4xx.cyclo ./Core/Src/system_stm32f4xx.d ./Core/Src/system_stm32f4xx.o ./Core/Src/system_stm32f4xx.su
+	-$(RM) ./Core/Src/ApplicationCode.cyclo ./Core/Src/ApplicationCode.d ./Core/Src/ApplicationCode.o ./Core/Src/ApplicationCode.su ./Core/Src/Error_Handling.cyclo ./Core/Src/Error_Handling.d ./Core/Src/Error_Handling.o ./Core/Src/Error_Handling.su ./Core/Src/Game.cyclo ./Core/Src/Game.d ./Core/Src/Game.o ./Core/Src/Game.su ./Core/Src/Gyro_Driver.cyclo ./Core/Src/Gyro_Driver.d ./Core/Src/Gyro_Driver.o ./Core/Src/Gyro_Driver.su ./Core/Src/LCD_Driver.cyclo ./Core/Src/LCD_Driver.d ./Core/Src/LCD_Driver.o ./Core/Src/LCD_Driver.su ./Core/Src/RNG_Driver.cyclo ./Core/Src/RNG_Driver.d ./Core/Src/RNG_Driver.o ./Core/Src/RNG_Driver.su ./Core/Src/fonts.cyclo ./Core/Src/fonts.d ./Core/Src/fonts.o ./Core/Src/fonts.su ./Core/Src/ili9341.cyclo ./Core/Src/ili9341.d ./Core/Src/ili9341.o ./Core/Src/ili9341.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/stm32f4xx_hal_msp.cyclo ./Core/Src/stm32f4xx_hal_msp.d ./Core/Src/stm32f4xx_hal_msp.o ./Core/Src/stm32f4xx_hal_msp.su ./Core/Src/stm32f4xx_it.cyclo ./Core/Src/stm32f4xx_it.d ./Core/Src/stm32f4xx_it.o ./Core/Src/stm32f4xx_it.su ./Core/Src/stmpe811.cyclo ./Core/Src/stmpe811.d ./Core/Src/stmpe811.o ./Core/Src/stmpe811.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f4xx.cyclo ./Core/Src/system_stm32f4xx.d ./Core/Src/system_stm32f4xx.o ./Core/Src/system_stm32f4xx.su
 
 .PHONY: clean-Core-2f-Src
 
